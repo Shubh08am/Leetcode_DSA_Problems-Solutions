@@ -5,7 +5,7 @@ class Solution {
     int count = 0;   
     int ans = 0 ;
     // Ist Approach :-
-    /*for (int i = 0; i < s.length(); i++)    
+    for (int i = 0; i < s.length(); i++)    
     {   if (s[i] != ' ')   
     {    count++;
     ans = count;    
@@ -15,7 +15,8 @@ class Solution {
     count = 0;                          
     // if (len < count)                                                     
     }   ans = max(ans , count) ;       
-    }*/            
+    }
+      
     // IInd Approach :- (using ASCII codes)
     for ( int i = 0 ; i<s.size() ; i++) {	 
       if ( s[i]== 32 )  { 
@@ -25,7 +26,8 @@ class Solution {
         ans = count ;       
       }  
       ans = max ( ans , count ) ;      
-    }       
+    }    
+    
     return ans;    
   }           
 };
