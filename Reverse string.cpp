@@ -57,3 +57,21 @@ class Solution {
     }
 
 };
+
+Approach III :-
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        stack<char>stk;
+        for(int u= 0 ; u<s.size();u++){
+            stk.push(s[u]);
+    }
+       
+      s.clear();
+        
+        while(!stk.empty()){
+      
+         s.push_back(stk.top()); 
+        stk.pop();}
+        } 
+};
