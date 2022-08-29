@@ -1,3 +1,5 @@
+Approach I :-
+    
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
@@ -9,5 +11,26 @@ public:
                 m= nums[i];
         }
         return m;
+    }
+}; 
+
+Approach II :-
+    
+    class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int ans=0;
+        map<int,int>s;
+        for(int i=0;i<nums.size();i++){
+s[nums[i]]++;
+        }
+        
+        for(auto it:s){
+            if(it.second>1){
+               ans= it.first;
+                break;
+            }
+        }
+        return ans;
     }
 };
