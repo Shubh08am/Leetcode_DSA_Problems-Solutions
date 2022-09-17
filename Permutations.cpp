@@ -1,55 +1,41 @@
-class Solution {
+class Solution { 
+    private: 
+    void find_permutation(vector<int>&nums,vector<int>&freq,vector<vector<int>>&ans,vector<int>&ds){
+	
+//base case
+if(ds.size()== nums.size()){ 
+ans.push_back(ds);
+	return;
+} 
 
-    private:
+//recursion case
+for(int i=0; i<nums.size();i++){
 
-    void answer ( vector<int>nums, vector<vector<int>> & results , int index){
+	//if not present in freq
+	if(!freq[i]){
+		ds.push_back(nums[i]);
+		//than mark it in freq so next time we won't include it
+		freq[i]=1;
+		
+		//Recursion call now 
+		find_permutation(nums,freq,ans,ds);
+		
+		//now backtracking time - remove from freq and ds 
+		freq[i]=0;
+		ds.pop_back();			
+				}	
+	
+	
+}
 
-        // base case
-
-if( index >= nums.size()){
-
-    results.push_back(nums);}
-
-        
-
-        
-
-        
-
-        for( int j = index ; j<nums.size();j++){
-
-            swap ( nums[index],nums[j] ) ;
-
-            answer( nums , results, index+1);
-
-            
-
-            // backtracking line
-
-swap(nums[index] , nums[j] ) ;
-
-        }
-
-        
-
-        
 
     }
-
 public:
-
     vector<vector<int>> permute(vector<int>& nums) {
-
-        vector<vector<int>>results;
-
-        int index = 0 ;
-
-        answer (nums, results,index);
-
-        
-
-        return results;
-
+        vector<vector<int>>ans;
+vector<int>ds;
+vector<int>freq(nums.size(),0);
+find_permutation(nums,freq,ans,ds);
+return ans;
     }
-
 };
