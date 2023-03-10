@@ -1,7 +1,7 @@
 class CombinationIterator {
 public:
     map<int,set<string>>mp; int cl = 0 ;
-    //generate all subsequences 
+    //generate all subsequences using backtracking
     void subsequences(int index , string characters , string &s,int n){
         //if reached end 
         if(index==n){
@@ -16,6 +16,25 @@ public:
         //not take 
         subsequences(index+1,characters,s,n);
     }
+      //generate all subsequences using bit manipulation
+    vector<string> AllPossibleStrings(string s) {
+	int n = s.length();
+	vector<string>ans;
+	for (int num = 0; num < (1 << n); num++) {
+		string sub = "";
+		for (int i = 0; i < n; i++) {
+			//check if the ith bit is set or not
+			if (num & (1 << i)) {
+				sub += s[i];
+			}
+		}
+		if (sub.length() > 0) {
+			ans.push_back(sub);
+		}
+	}
+	sort(ans.begin(), ans.end());
+	return ans;
+}
     CombinationIterator(string characters, int combinationLength) {
         //generate all string of combinationLength 
         int n=characters.size() ;
