@@ -40,7 +40,8 @@ public:
             dummy=dummy->next;
         }
         //Now,find mid all value in left are smaller and in right are greater than mid apply binary search 
-        //But,still T.C will be O(n) as going on every node
+        //But,still T.C will be O(nlogn) as going on every node and doing binary-search & S.C -> O(n)
+        //optimized - use floyd cycle detection to find mid
         return binarySearch(nums,0,nums.size()-1);
     }
 };
