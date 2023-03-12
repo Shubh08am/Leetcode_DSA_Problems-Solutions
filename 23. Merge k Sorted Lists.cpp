@@ -47,12 +47,22 @@ public:
     //  for(auto&x : ans) cout<<x->val<<" ";
 
          if(ans.size()==0) return NULL; //empty lists
+         /*
          ListNode*dummy = NULL ;
          int i=0;
          while(i<ans.size()){
          insertattail(dummy,ans[i]->val);
          i++;
          }
-      return dummy;
+         */
+         ListNode*dummy = ans[0] , *temp;
+         temp=dummy;
+         int i=1;
+         while(i<ans.size()){
+         dummy->next = ans[i];
+         dummy=dummy->next;
+         i++;
+         }
+      return temp;
     }
 };
