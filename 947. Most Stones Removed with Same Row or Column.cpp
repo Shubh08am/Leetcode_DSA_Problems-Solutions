@@ -119,16 +119,20 @@ public:
        
         //Approach-2 :- USING HASHING 
         unordered_map<int,int>stonesNodes ; 
+         unordered_set<int>stonesPos;
         for(auto&it : stones){
              int nodeOfRow = it[0] ; //row assigned as node
              int nodeOfCol = it[1] + maxRow + 1 ;   //column assigned as node by mapping it to start just after maxRow 
              //connect them dynamically, using DSU 
              ds.UnionBySize(nodeOfRow,nodeOfCol);
              //assign in stonesNodes that stones find for row & col at nodeOfRow & nodeOfCol 
-             stonesNodes[nodeOfRow]=1;
+             stonesNodes[nodeOfRow]=1; //USING MAP
              stonesNodes[nodeOfCol]=1;
+             stonesPos.insert(nodeOfRow);//using SET 
+             stonesPos.insert(nodeOfCol);
           }
         
+        //USING MAP
         int components=0;//total components present in stones
         //Now,see in map for valid Components(same Ultimate Parent) 
         for(auto&it: stonesNodes){ 
@@ -137,6 +141,16 @@ public:
                  components++;
             }
         }
-        return stones.size()-components;
+     //   return stones.size()-components;
+
+        //using SET 
+        int componentSet=0;//total components present in stones
+        for(auto&it: stonesPos){ 
+            //topmost guy
+            if(ds.findUltimateParent(it)==it){
+                 componentSet++;
+            }
+        }
+    return stones.size()-componentSet;
     }
 };
