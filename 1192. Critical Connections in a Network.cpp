@@ -9,7 +9,10 @@ class Solution {
         timer++; //increment for next node 
 
         for(auto it : adj[node]){
-            if(it==parent) continue;
+            if(it==parent) {
+                cout<<it<<" "<<parent<<"\n";
+                continue;
+                }
             if(!vis[it]){
                 //make a dfs call 
                  dfs(it,node,vis,tin,low,adj,bridges);
@@ -29,7 +32,10 @@ class Solution {
         }
     }
 public:
-    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) { 
+        //T.C -> O(V+2E) [DFS TRAVERSAL] 
+        //S.C -> O(V+2E) [FOR ADJACENCY LIST]  + O(3N) [for vis,tin,low]
+        
         //undirected graph -> create a adjacency list 
         vector<int>adj[n];
         for(auto& it : connections){
