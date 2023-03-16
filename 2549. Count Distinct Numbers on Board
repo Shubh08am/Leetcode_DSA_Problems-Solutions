@@ -1,0 +1,10 @@
+#define ll long long
+class Solution {
+public:
+    int distinctIntegers(int n) {
+        ll c= n-1;
+        if(n==1) return n; 
+         
+       return c;
+    }
+};
