@@ -1,25 +1,32 @@
 class MinStack {
 public:
-//S.C -> O(N)
-vector<int>st; // OR USE PRIORITY QUEUE (MIN-HEAP)
+//S.C -> O(2N)
+//st does stack operation and mini stores minimum element
+stack<int>st,mini; // OR USE PRIORITY QUEUE (MIN-HEAP) OR VECTOR OR MULTISET+STACK
     MinStack() {
         
     }
     
     void push(int val) {
-        st.push_back(val);
+        st.push(val);
+        //only smaller value than mini top inserted in mini
+        if(mini.empty() || mini.top()>=val){
+            mini.push(val) ;
+        }
     }
     
     void pop() {
-        st.pop_back();
+        //if mini top is equal to st top remove mini top as pop operation 
+        if(mini.top()==st.top()) mini.pop();
+         st.pop();
     }
     
     int top() {
-        return st.back();
+        return st.top();
     }
     
     int getMin() {
-        return *min_element(st.begin(),st.end()) ;
+        return mini.top() ;
     }
 };
 
