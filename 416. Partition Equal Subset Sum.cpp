@@ -62,7 +62,7 @@ int tabulation(vector<int>&arr, int sum,vector<vector<bool>>&dp){
 int tabulationSpaceOptimization(vector<int>&arr, int sum){
      int n = arr.size();
      vector<int>prev(sum+1,0) , curr(sum+1,0);
-     for(int i=0;i<n;i++) prev[0] = true; 
+      prev[0] = curr[0] = true; 
     //when at last pos only for that target true , for i=n-1
     if(arr[n-1]<=sum) prev[arr[n-1]] = true; 
     
