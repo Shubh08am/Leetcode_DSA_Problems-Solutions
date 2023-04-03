@@ -85,6 +85,29 @@ public:
         }
         return prev[amount] ;
     }
+//Approach-5 Tabulation with Space Optimization[Using Single Array]  :- Time Complexity: O(N*amount) Space Complexity: O(amount)
+    int tabulationWithSpaceOptimization2(vector<int>& coins, int amount){
+         int n = coins.size();
+         vector<int>prev(amount+1,0);
+
+         //for ind=n-1 base case :- amount varies from 0 to amount
+         for(int tar=0;tar<=amount;tar++){
+             if(tar%coins[n-1]==0) prev[tar] = tar/coins[n-1];
+             else prev[tar] = 1e9 ;
+         }
+
+         //for ind=n-1 done start from ind=n-2 
+         for(int ind=n-2;ind>=0;ind--){
+             for(int tar= 0; tar<=amount;tar++){
+                    int notTake = 0 + prev[tar] ;
+                    int take = 1e9 ; 
+                    //as taking 1 coin therefore add 1 and stay at ind position only as we may use it again on reduced target
+                    if(coins[ind]<=tar) take = 1 + prev[tar-coins[ind]] ; 
+                    prev[tar] = min(take,notTake) ;
+             }
+        }
+        return prev[amount] ;
+    }
     int coinChange(vector<int>& coins, int amount) {
         int n = coins.size();
      //   int coin = solve(0,coins,amount) ;
@@ -97,7 +120,10 @@ public:
     //  int coin3 = tabulation(coins,amount);
     //  return coin3==1e9?-1:coin3 ; //Approach-3 Tabulation
 
-       int coin4 = tabulationWithSpaceOptimization(coins,amount);
-       return coin4==1e9?-1:coin4 ; //Approach-4 tabulationWithSpaceOptimization
+    //   int coin4 = tabulationWithSpaceOptimization(coins,amount);
+    //   return coin4==1e9?-1:coin4 ; //Approach-4 tabulationWithSpaceOptimization
+
+       int coin5 = tabulationWithSpaceOptimization(coins,amount);
+       return coin5==1e9?-1:coin5 ; //Approach-5 tabulationWithSpaceOptimization[Single array Used]
     }
 };
