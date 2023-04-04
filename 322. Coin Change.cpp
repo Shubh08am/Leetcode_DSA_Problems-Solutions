@@ -102,6 +102,10 @@ public:
                     int notTake = 0 + prev[tar] ;
                     int take = 1e9 ; 
                     //as taking 1 coin therefore add 1 and stay at ind position only as we may use it again on reduced target
+
+               //overwrite curr value in prev as for calculating curr[ind] 
+               //we don't need left guy of prev[ind] only same column guy of curr[ind] i.e prev[ind]
+               //thus,all left value from prev[ind] is not used therefore we can directly update
                     if(coins[ind]<=tar) take = 1 + prev[tar-coins[ind]] ; 
                     prev[tar] = min(take,notTake) ;
              }
