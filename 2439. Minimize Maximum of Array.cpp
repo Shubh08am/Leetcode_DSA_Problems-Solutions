@@ -25,7 +25,8 @@ public:
       //      cout<<pre[i]<<" ";
       //  } 
         for(int i=0;i<n;i++){
-           int currRes = (pre[i]+i)/(i+1) ; 
+           int currRes = ceil((pre[i]*1.0)/(i+1) ); 
+           //int currRes = (pre[i]+i)/(i+1) ; //or use this
            ans=max(ans,currRes);
         } 
         return ans;
