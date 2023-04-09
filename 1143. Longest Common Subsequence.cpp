@@ -241,107 +241,48 @@ public:
     //    for(auto it : prev) cout<<it<<" ";
     return prev[m];
     }
-     //Approach Recursion Time Complexity: O(2^N) Space Complexity: O(N*N)
-    //Recursion call from (0,n-1)
-    int solve7(string&s,int i,int j){
-       //base case
-       if(i==j) return 1; //i.e same char take it once only not twice
-       if(i>j) return 0; //don't check again when i crosses j as it is already checked
-       
-       //match case
-       if(s[i]==s[j]){
-           //atleast 2 length palindrome string possible and solve for rest 
-           return 2+solve7(s,i+1,j-1);
-       }
-       
-       //not-Match case 
-       return max(solve7(s,i+1,j),solve7(s,i,j-1)); //max of both possibilities 
-   } 
-   //Approach-2 Memoization :- Time Complexity: O(N*N) Space Complexity: O(N*N) + O(N*N)
-    //Recursion call from (0,n-1)
-   int solve8(string&s,int i,int j,vector<vector<int>>&dp){
-       //base case
-       if(i==j) return 1; //i.e same char take it once only not twice
-       if(i>j) return 0; //don't check again when i crosses j as it is already checked
-       
-       if(dp[i][j]!=-1) return dp[i][j] ;
-       //match case
-       if(s[i]==s[j]){
-           //atleast 2 length palindrome string possible and solve for rest 
-           return dp[i][j] = 2+solve8(s,i+1,j-1,dp);
-       }
-       
-       //not-Match case 
-       return dp[i][j] = max(solve8(s,i+1,j,dp),solve8(s,i,j-1,dp)); //max of both possibilities 
-   }
+    
+    //Approach-4 tabulation With Space Optimization[[Using Single Row]] :- Time Complexity: O(N*M) Space Complexity: O(M)
+    //Recursion call from (n,m) -> After right shifting of index(index=n (right shifted) indicates index=n-1 in old scenario)
+    int tabulationWithSpaceOptimization3(string &text1, string &text2){
+        int n = text1.size() , m = text2.size() ; 
+         vector<int>prev(m+1,0);
 
-      int tabulation3(string&s){ 
-          int n=s.size();
-          vector<vector<int>>dp(n,vector<int>(n,0));
-
-        //for base cases
-          for(int i=0;i<n;i++){
-              for(int j=0;j<n;j++){
-                  if(i==j) dp[i][j]=1; //i.e same char take it once only not twice
-                  if(i>j)  dp[i][j]=0; //don't check again when i crosses j as it is already checked
-              }
-          }
-       //In Recursion call (0,n-1) i varies from 0 to n-1 therefore in tabulation i varies from n-1 to 0 
-       //In Recursion call (0,n-1) j varies from  n-1 to 0 therefore in tabulation  j varies from 0 to n-1
-            //but for i>j -> we don't include therefore vary j from i+1 to n as j always greater than i
-       for(int i=n-1;i>=0;i--){
-           for(int j=i+1;j<n;j++){ 
-               
-                //match case 
-                 if(s[i]==s[j]){
-                    //atleast 2 length palindrome string possible and solve for rest 
-                      dp[i][j] = 2+dp[i+1][j-1];
-               }
-                //not-Match case
-               else {
-                    dp[i][j] = max(dp[i+1][j] ,dp[i][j-1]);  //max of both possibilities
-               }
-           }
-       }
-      /* for(int i=0;i<n;i++){
-            for(int j=0;j<n;j++){
-                cout<<dp[i][j]<<" ";
-            }
-            cout<<"\n";
-        } */
-      return dp[0][n-1];
-   }
-   //Approach-4 tabulation With Space Optimization :- Time Complexity: O(N*N) Space Complexity: O(N)
-    int tabulationWithSpaceOptimization3(string &s){
-        int n = s.size() ; 
-         vector<int>prev(n,0),curr(n,0);
-
-         for(int i=n-1;i>=0;i--){
-             curr[i]=1; //make curr row char as 1
-            for(int j=i+1;j<n;j++){ 
+        //base case :- for i=0 , j varies from 0 to m (prev row) 
+        //no need to make curr = 0 for all i -> from 0 to n (when j=0)[as it is column part and not needed]
+             for (int j = 0; j < m + 1; j++) {
+                    prev[j] = 0;
+                }
+   
+         for(int ind1=1;ind1<=n;ind1++){
+             int curr=prev[0] ; 
+            for(int ind2=1;ind2<=m;ind2++){ 
+                int temp = prev[ind2] ;
                 //match
-                if(s[i]==s[j]){ 
-                    curr[j] = 2 + prev[j-1];
+                if(text1[ind1-1]==text2[ind2-1]){ 
+                    prev[ind2] = 1 + curr; // curr denotes prev[ind2-1]
                 }
-                else{  
-                    curr[j] = max(prev[j],curr[j-1]); 
+                else{ 
+                     int pos1 =  prev[ind2-1]  ; //as dp[ind1][ind2-1] -> ind1 indicated curr row
+                    int pos2 =  prev[ind2] ;//as dp[ind1-1][ind2] -> ind1-1 indicated prev row
+                    prev[ind2] = max(pos1,pos2); 
                 }
+                curr=temp; //for next time prev row value [prev[j-1] is updated to temp use it]
             }
-            prev=curr;
-        }
+         }
     //    for(auto it : prev) cout<<it<<" ";
-    return prev[n-1];
+    return prev[m];
     }
     int longestCommonSubsequence(string text1, string text2) {
         int n = text1.size() , m = text2.size() ;
           
-        //  return solve(0,0,n,m,text1,text2); //Approach-1 Recursion
+        // return solve(0,0,n,m,text1,text2); //Approach-1 Recursion
 
-     //  vector<vector<int>>dp(n,vector<int>(m,-1));
-     //  return solve2(0,0,n,m,text1,text2,dp);  //Approach-2 Memoization
+    //   vector<vector<int>>dp(n,vector<int>(m,-1));
+    //    return solve2(0,0,n,m,text1,text2,dp);  //Approach-2 Memoization
 
-     //vector<vector<int>>dp(n+1,vector<int>(m+1,-1));
-    // int ans =  solve3(-1,-1,n,m,text1,text2,dp);
+    // vector<vector<int>>dp(n+1,vector<int>(m+1,-1));
+   //  int ans =  solve3(-1,-1,n,m,text1,text2,dp);
 
        /* for(int i=0;i<=n;i++){
             for(int j=0;j<=m;j++){
@@ -350,43 +291,22 @@ public:
             cout<<"\n";
         }
         */
-     //  return ans;  //Approach-2 Memoization
-     // return tabulation(text1,text2) ;  //Approach-3 tabulation 
+      // return ans;  //Approach-2 Memoization
+     //  return tabulation(text1,text2) ;  //Approach-3 tabulation 
         
      //   return tabulationWithSpaceOptimization(text1,text2) ; //Approach-4 tabulationWithSpaceOptimization 
 
      //ALL CALLS FROM (n-1,m-1) & after right shifting from (n,m) 
-      // return solve4(n-1,m-1,n,m,text1,text2); //Approach-1 Recursion
+     //  return solve4(n-1,m-1,n,m,text1,text2); //Approach-1 Recursion
        
-        //  vector<vector<int>>dp(n,vector<int>(m,-1));
-        // return solve5(n-1,m-1,n,m,text1,text2,dp);  //Approach-2 Memoization
+      //   vector<vector<int>>dp(n,vector<int>(m,-1));
+      //  return solve5(n-1,m-1,n,m,text1,text2,dp);  //Approach-2 Memoization
       
-       //vector<vector<int>>dp(n+1,vector<int>(m+1,-1)); // of size n+1 & m+1 as right shifted
-       //return solve6(n,m,n,m,text1,text2,dp);  //Approach-2 Memoization after right shifting of index
+    //  vector<vector<int>>dp(n+1,vector<int>(m+1,-1)); // of size n+1 & m+1 as right shifted
+    //  return solve6(n,m,n,m,text1,text2,dp);  //Approach-2 Memoization after right shifting of index
 
-    //  return tabulation2(text1,text2) ;  //Approach-3 tabulation 
-     return tabulationWithSpaceOptimization2(text1,text2) ; //Approach-4 tabulationWithSpaceOptimization 
-    }
-
-    int longestPalindromeSubseq(string s) {
-        //LCS Observation 
-        //Take reverse string of s and than find LCS of it and it is the longest palindrome subsequence
-        //as the original string was reversed and than we found some common subsequence between them
-        //and that is bound to be LPS (longest palindrome subsequence)
-      
-        int n=s.size();
-       // string t = s ;
-       // reverse(t.begin(),t.end());
-      //  return longestCommonSubsequence(s,t);
-
-      //for Approach Using Two Pointer (kind of) 
-     
-     //  return solve7(s,0,n-1) ;  //Approach-1 Recursion 
-
-     //   vector<vector<int>>dp(n,vector<int>(n,-1));
-     //  return solve8(s,0,n-1,dp);  //Approach-2 Memoization 
-     // return tabulation3(s); 
-
-     return tabulationWithSpaceOptimization3(s) ;
+    // return tabulation2(text1,text2) ;  //Approach-3 tabulation 
+  //   return tabulationWithSpaceOptimization2(text1,text2) ; //Approach-4 tabulationWithSpaceOptimization 
+  return tabulationWithSpaceOptimization3(text1,text2) ; //Approach-4 tabulationWithSpaceOptimization [Using Single Row]
     }
 };
