@@ -272,6 +272,29 @@ public:
         int op2 = 1 + f(s, i, j - 1, dp);
         return dp[i][j] = min(op1, op2); 
     }
+   //Approach-3 Tabulation :- Time Complexity: O(N*M) Space Complexity: O(N*M)
+     int tabulation3(string &s){
+         int n = s.size();
+    vector<vector<int>> dp(n, vector<int>(n, 1e6));
+       for(int i = 0; i < n; i++)
+          dp[i][i] = 0;
+      for(int len = 1; len <= n; len++) {
+          for(int i = 0; i + len < n; i++) {
+              dp[i][i] = 0;
+              int j = i + len;
+              if(s[i] == s[j]) {
+                  if(len == 1)
+                      dp[i][j] = 0;
+                  else
+                      dp[i][j] = dp[i + 1][j - 1];
+              }
+              else {
+                  dp[i][j] = min(1 + dp[i + 1][j], 1 + dp[i][j - 1]);
+              }
+          }
+      }
+      return dp[0][n - 1];
+    }
     int longestCommonSubsequence(string text1, string text2) {
         int n = text1.size() , m = text2.size() ;
           
@@ -310,7 +333,10 @@ public:
 
         //Not relating with LCS
       //  return solve7(s,0,n-1); //Approach-1 Recursion
-       vector<vector<int>>dp(n,vector<int>(n,-1));
-       return f(s,0,n-1,dp);  //Approach-2 Memoization
+     
+     //  vector<vector<int>>dp(n,vector<int>(n,-1));
+      // return f(s,0,n-1,dp);  //Approach-2 Memoization
+
+      return tabulation3(s); //Approach-3 tabulation 
     }
 };
