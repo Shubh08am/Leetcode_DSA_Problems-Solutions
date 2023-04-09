@@ -241,7 +241,37 @@ public:
     //    for(auto it : prev) cout<<it<<" ";
     return prev[m];
     }
+ //Approach-1 Recursion Time Complexity: O(2^N) Space Complexity: O(N*N)
+    //Recursion call from (0,n-1)
+    int solve7(string &s,int i , int j ){
+        if(i>=j) return 0;
 
+        //match case
+        if(s[i]==s[j]){
+            return solve7(s,i+1,j-1) ; 
+        }
+        //not-match case :- 
+        return 1+min(solve7(s,i+1,j),solve7(s,i,j-1));
+    }
+
+ //Approach-2 Memoization :- Time Complexity: O(N*N) Space Complexity: O(N*N) + O(N*N)
+    //Recursion call from (0,n-1)
+	int f(string &s, int i, int j, vector<vector<int>>& dp) {
+        if(i >= j)
+            return 0;
+
+        if(dp[i][j] != -1)
+            return dp[i][j];
+
+        //match case
+        if(s[i] == s[j])
+            return dp[i][j] = f(s, i + 1, j - 1, dp);
+
+        //not-match case 
+        int op1 = 1 + f(s, i + 1, j, dp);
+        int op2 = 1 + f(s, i, j - 1, dp);
+        return dp[i][j] = min(op1, op2); 
+    }
     int longestCommonSubsequence(string text1, string text2) {
         int n = text1.size() , m = text2.size() ;
           
@@ -271,10 +301,16 @@ public:
     return tabulationWithSpaceOptimization2(text1,text2) ; //Approach-4 tabulationWithSpaceOptimization 
     }
     int minInsertions(string s) {
+        int n=s.size();
         string t = s;
         reverse(t.begin(),t.end());
         int lenOfLCS = longestCommonSubsequence(s,t);
         int minInsertion = s.size()-lenOfLCS; 
-        return minInsertion ;
+    //    return minInsertion ;
+
+        //Not relating with LCS
+      //  return solve7(s,0,n-1); //Approach-1 Recursion
+       vector<vector<int>>dp(n,vector<int>(n,-1));
+       return f(s,0,n-1,dp);  //Approach-2 Memoization
     }
 };
