@@ -1,51 +1,69 @@
 class Solution {
 public:
+   //If cycle is present
+    bool CyclePresent(vector<int> adj[],int n){
+        vector<int> inDegree(n,0);
+        for(int i=0;i<n;i++){
+            for(auto adjNode : adj[i]){
+                inDegree[adjNode]++;
+            }
+        }
+        queue<int> q;
+        for(int i=0;i<n;i++){
+            if(inDegree[i]==0)
+            q.push(i);
+        }
+        vector<int> topoSort;
+        while(!q.empty()){
+            auto node=q.front();
+             q.pop();
+            topoSort.push_back(node);
+            for(auto adjNode : adj[node]){
+                inDegree[adjNode]--;
+                if(inDegree[adjNode]==0)
+                q.push(adjNode);
+            }
+        }
+        return topoSort.size()!=n;
+    }
+
+    void dfs(int node,string &colors,vector<int> adj[],int &res,vector<int> &vis,vector<vector<int>> &dp){
+        vis[node]=1;
+        int maxi=1;
+        for(auto adjNode : adj[node]){
+            if(!vis[adjNode]){
+                dfs(adjNode,colors,adj,res,vis,dp);
+            }
+            for(int i=0;i<26;i++){
+                dp[node][i]=max(dp[node][i],dp[adjNode][i]);
+                maxi=max(maxi,dp[node][i]);
+            }
+        }
+        //store the frequency as well
+        dp[node][colors[node]-'a']++;
+        maxi=max(maxi,dp[node][colors[node]-'a']);
+        res=max(res,maxi);
+    }
+
     int largestPathValue(string colors, vector<vector<int>>& edges) {
-        int n = colors.size();
-        vector<int> indegrees(n, 0);
-        vector<int>adj[n];
-
-        for (auto&it : edges) {
-            adj[it[0]].push_back(it[1]); // it[0] -> it[1] [directed edges]
-            indegrees[it[1]]++;
+        int n=colors.size();
+        vector<int> adj[n];
+        for(auto it : edges){
+            adj[it[0]].push_back(it[1]);
         }
 
-        queue<int>q ;
+        if(CyclePresent(adj,n)){
+        return -1;
+        }
 
-        //push all nodes in queue whose indegree are zero
-        for (int i = 0; i < n; i++) {
-            if (indegrees[i] == 0) {
-                q.push(i);
+        vector<vector<int>> dp(n,vector<int>(26,0));
+        int res=1,maxi=0;
+        vector<int> vis(n,0);
+        for(int i=0;i<n;i++){
+            if(!vis[i]){
+                dfs(i,colors,adj,res,vis,dp);
             }
         }
-
-        vector<vector<int>>freq(n, vector<int>(26, 0));
-        for (int i = 0; i < n; i++) {
-            freq[i][colors[i] - 'a']++;
-        }
-        int color = 0;
-        int visited = 0;
-
-        while (!q.empty()) {
-            int u = q.front();
-            q.pop();
-            visited++;
-
-            for (auto&v : adj[u]) {
-                //atmost 26 character
-                for (int i = 0; i < 26; i++) {
-                    freq[v][i] = max(freq[v][i], freq[u][i] + (colors[v] - 'a' == i ? 1 : 0));
-                }
-                //remove the edge between u&v
-                indegrees[v]--;
-                //if indegree becomes 0 insert in queue v
-                if (indegrees[v] == 0) {
-                    q.push(v);
-                }
-            }
-            //track color 
-            color = max(color, *max_element(freq[u].begin(), freq[u].end()));
-        }
-        return visited == n ? color : -1;
+        return res;
     }
 };
