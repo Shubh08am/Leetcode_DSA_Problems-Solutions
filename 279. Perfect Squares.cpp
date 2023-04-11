@@ -38,6 +38,21 @@ public:
      //   cout<<tar<<"\n";
         return dp[ind][tar] = min(take,notTake);
     }
+    int tabulation(int n){
+
+        vector<int>dp(n+1,1e9);
+        dp[0]=0;
+
+        for(int i=1;i<=n;i++){
+            int minCnt = INT_MAX;
+            for (int num = 1; num <= sqrt(i); num++){
+                int currCnt = 1 + dp[i - (num*num)];
+                minCnt = min(minCnt, currCnt);
+            }
+            dp[i] = minCnt;
+        }
+        return dp[n];
+    }
     int numSquares(int n) { 
         //coin-change 1 similar problem
 
@@ -48,8 +63,9 @@ public:
         
         //return solve(0,n,sq); //Approach-1 Recursion
         
-          vector<vector<int>>dp(101,vector<int>(10001,-1));
-          return solve2(0,n,sq,dp); //Approach-2 Memoization
- 
-     }
+       //   vector<vector<int>>dp(101,vector<int>(10001,-1));
+       //   return solve2(0,n,sq,dp); //Approach-2 Memoization
+        
+          return tabulation(n);  //Approach-3 Tabulation
+      }
 };
