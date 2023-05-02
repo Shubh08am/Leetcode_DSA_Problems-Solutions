@@ -121,8 +121,8 @@ public:
 
     // return tabulation(s,t); //Approach-3 tabulation
 
-    //  return tabulationWithSpaceOptimization(s,t); //Approach-4 tabulation With Space Optimization
+    //  return tabulationWithSpaceOptimization(s,t); //Approach-4 tabulation With Space Optimization [Using Two Array]
 
-     return tabulationWithSpaceOptimization2(s,t); //Approach-5 tabulation With Space Optimization
+     return tabulationWithSpaceOptimization2(s,t); //Approach-5 tabulation With Space Optimization [Using Single Array]
      }
 };
