@@ -1,52 +1,54 @@
 class Solution {
 public:
     // INVERSION COUNT USING MERGE SORT 
-    void merge(int start,int end,int mid,vector<int>&nums,vector<pair<int,int>>&vp,vector<int>&result){
-        vector<pair<int,int>>dummy(end-start+1);
-
-        int i=start,j=mid+1,k=0; 
+    void merge(int start,int end,int mid,vector<int>&nums,vector<pair<int,int>>&vp,vector<pair<int,int>>&dummy,vector<int>&result){
+         int inversion=0;
+        int i=start,j=mid+1,k=start; 
 
         while(i<=mid&&j<=end){
-            //SORTING IN DESCENDING ORDER
-            if(vp[i].first<=vp[j].first){
-                dummy[k]=vp[j];
-                j++;k++;
-            }
-            else{
-                 dummy[k]=vp[i];
-                //include inversions as i<j && arr[i]>arr[j]
-                 result[vp[i].second]+=end-j+1;
-                 i++;k++;
-            }
+             if(vp[i]<vp[j]){
+                 //take in count no of inversion so far
+                result[vp[i].second]+=inversion;
+                dummy[k++]=vp[i++];
+             }
+             else if(vp[i]>vp[j]){
+                 dummy[k++]=vp[j++];
+                 //see for inversion as arr[i]>arr[j]
+                 inversion++;
+             }
+          /*  else{
+                dummy[k++]=vp[j++];
+                dummy[k++]=vp[i++];
+             }*/
         }
         while(i<=mid){
-            dummy[k]=vp[i];
-            i++;k++;
+             result[vp[i].second]+=inversion;
+            dummy[k++]=vp[i++];
         }
          while(j<=end){
-            dummy[k]=vp[j];
-            j++;k++;
+            dummy[k++]=vp[j++];
         }
-        for(int i=start;i<=end;i++) vp[i]=dummy[i-start];
+        for(int i=start;i<=end;i++) vp[i]=dummy[i];
       }
-    void merge_sort(int start,int end,vector<int>&nums, vector<pair<int,int>>&vp,vector<int>&result){
+    void merge_sort(int start,int end,vector<int>&nums, vector<pair<int,int>>&vp,vector<pair<int,int>>&dummy,vector<int>&result){
         if(start>=end) return; 
 
         int mid = start+(end-start)/2;
 
-        merge_sort(start,mid,nums,vp,result);//for left half 
-        merge_sort(mid+1,end,nums,vp,result);//for right half 
+        merge_sort(start,mid,nums,vp,dummy,result);//for left half 
+        merge_sort(mid+1,end,nums,vp,dummy,result);//for right half 
         //merge them 
-        merge(start,end,mid,nums,vp,result);
+        merge(start,end,mid,nums,vp,dummy,result);
     }
     vector<int> countSmaller(vector<int>& nums) {
         int n = nums.size();
-        vector<pair<int,int>>vp;
+        vector<pair<int,int>>vp,dummy;
         vector<int>result(n);
         for(int i=0;i<n;i++){
             vp.push_back({nums[i],i});
         }
-        merge_sort(0,n-1,nums,vp,result);
+        dummy=vp;
+        merge_sort(0,n-1,nums,vp,dummy,result);
         return result;
     }
 };
