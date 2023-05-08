@@ -1,7 +1,7 @@
 const int mod = 1e9+7;
 class Solution {
 public:
-    //Approach-1 Recursion  Time complexity : (4^n) Space complexity : O(n)
+    //Approach-1 Recursion  Time complexity : O(4^n) Space complexity : O(n)
     bool isNotValid(int nrow,int ncol,int m,int n){
         return nrow<0 || nrow>=m || ncol<0 || ncol>=n;
     }
@@ -21,7 +21,7 @@ public:
         }  
     return ans;
     }
-    //Approach-2 Memoization Time complexity : (n*m*maxMove) Space complexity : O(n*m)
+    //Approach-2 Memoization Time complexity : O(n*m*maxMove) Space complexity : O(n*m*maxMove)+O(n) 
      int solve2(int row, int col,int m, int n, int maxMove,vector<vector<vector<int>>>&dp) {
           
       if(isNotValid(row,col,m,n)) return 1;
