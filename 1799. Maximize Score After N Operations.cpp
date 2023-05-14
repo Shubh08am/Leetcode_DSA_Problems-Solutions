@@ -32,7 +32,10 @@ https://leetcode.com/problems/maximize-score-after-n-operations/solutions/352167
     }
     int maxScore(vector<int>& nums) {
         //DP ON BIT-MASKING 
-         vector<int>dp(1<<14,-1); 
+         int N = nums.size();
+        // 2 ^ N -> number of unique possible combiantions of take or notTake
+        int maskValue = (1 << N);  // 2 ^ N
+        vector<int> dp(maskValue, -1); 
         return solve(1,0,nums,dp);
     }
 };
