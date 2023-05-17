@@ -51,7 +51,7 @@ public:
             ListNode*preserve = slow->next ; 
             //point slow->next to prev 
             slow->next=prev;
-            //update prev to preserve 
+            //update prev to slow 
             prev=slow; 
             //move,slow ahead to preserve 
             slow=preserve ; 
