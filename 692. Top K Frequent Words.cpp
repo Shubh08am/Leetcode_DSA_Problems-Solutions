@@ -1,25 +1,24 @@
-bool cmp(pair<string, int>&p1, pair<string, int>& p2){
-    if(p1.second==p2.second)
-        return p1.first<p2.first;
-    return p1.second>p2.second;
-}
 class Solution {
 public:
-    vector<string> topKFrequent(vector<string>& words, int k) {
-        unordered_map<string, int>mp;
-        for(int i=0; i<words.size(); i++){
-            mp[words[i]]++;
-        }
-        vector<pair<string, int>>vp;
-        for(auto it:mp){
-            vp.push_back({it.first, it.second});
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        priority_queue<int>pq;
+        unordered_map<int,int>mp;
+        vector<int>ans;
+
+        for(auto&it:nums) mp[it]++;
+
+        for(auto&it:mp){
+             pq.push(it.second);
         }
 
-        sort(vp.begin(), vp.end(), cmp);
-        vector<string> ans;
-        for(int i=0; i<k; i++){
-            ans.push_back(vp[i].first);
+        while(!pq.empty()){
+            if(ans.size()==k) break;
+            int freq = pq.top();
+            pq.pop();
+            for(auto&it:mp){
+                if(it.second==freq && find(ans.begin(),ans.end(),it.first)==ans.end()) ans.push_back(it.first);
+            }
         }
-        return ans;
+    return ans;
     }
 };
