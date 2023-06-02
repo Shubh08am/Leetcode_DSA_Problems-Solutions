@@ -30,7 +30,7 @@ public:
             //    cout<<ans<<" "<<freq[i]<<"\n";
                 
                 freq[i]-=lenTaken;
-                if(i==0) break;
+              //  if(i==0) break;
                 int new_i=i-1; 
                                          
                  while(new_i>0 && freq[new_i]==0 ) new_i--; 
