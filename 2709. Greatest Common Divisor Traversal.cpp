@@ -1,124 +1,135 @@
 class DisjointSet{
 public:
-vector<int>parent , rank , size ; 
+    vector<int>rank,size,parent;
 
-//constructor created 
-DisjointSet(int n){
-    //declare size for vector 
-    parent.resize(n+1) ;  //n+1 as it covers both 0 & 1 based indexing
-    rank.resize(n+1,0) ;  //initially, every node rank is marked as 0
-    size.resize(n+1,1) ;  //initially, every node size is marked as 1
+    DisjointSet(int n){
+        rank.resize(n+1,0);
+        size.resize(n+1,1);
+        parent.resize(n+1);
 
-    //initially,every node is a parent of itself 
-    for(int i=0;i<=n;i++){
-        parent[i]=i;
+        //Initially,every node is a prent of itself 
+        for(int i=0;i<=n;i++){
+            parent[i]=i;
+        }
     }
-}
 
-//find Ultimate Parent  
-int findUltimateParent(int node){
-       if(node==parent[node]) return node ; 
-       //doing,path compression by assigning value to parent[node] and making T.C  as O(4*alpha) --> O(1)
-       return parent[node] = findUltimateParent(parent[node]) ;
-}
-
-//Disjoint Set -> [1] finding Union By Rank 
-void UnionByRank(int u , int v){
-    int ulp_u = findUltimateParent(u) ; //UltimateParent of u 
-    int ulp_v = findUltimateParent(v) ; //UltimateParent of v
-
-    //if belonging to same components 
-    if(ulp_u == ulp_v) return;
-
-    //if not belonging to same components 
-    if(rank[ulp_u]<rank[ulp_v]){
-        //smaller guy gets connected to larger guy and no change in rank of ulp_u or ulp_v 
-        //update parent of smaller guy
-        parent[ulp_u]=ulp_v;
+    //FIND ULTIMATE PARENT
+    int findUltimatePrent(int node){
+            return node==parent[node]?node:parent[node]=findUltimatePrent(parent[node]) ;
     }
-    else if(rank[ulp_u]>rank[ulp_v]){
-        //smaller guy gets connected to larger guy and no change in rank of ulp_u or ulp_v 
-        //update parent of smaller guy
-        parent[ulp_v]=ulp_u;
-    }
-    else if(rank[ulp_u]==rank[ulp_v]){
-        //Anyone can get connected to other node and change in rank of node to which connected
-        //update parent of node which gets connected
-        parent[ulp_v]=ulp_u; //connecting ulp_v to ulp_u 
-        rank[ulp_u]++;
-    }
-}
 
-//Disjoint Set -> [2] finding Union By Size 
-void UnionBySize(int u , int v){
-    int ulp_u = findUltimateParent(u) ; //UltimateParent of u 
-    int ulp_v = findUltimateParent(v) ; //UltimateParent of v
+    //UNION BY RANK
+    void UnionByRank(int u,int v){
+        int ulp_u = findUltimatePrent(u);
+        int ulp_v = findUltimatePrent(v);
 
-    //if belonging to same components 
-    if(ulp_u == ulp_v) return;
+        //4 case 
 
-    //if not belonging to same components 
-    if(size[ulp_u]<size[ulp_v]){
-        //smaller guy gets connected to larger guy and change in size to which connected
-        //update parent of smaller guy
-        parent[ulp_u]=ulp_v;
-        size[ulp_v]+=size[ulp_u];
+        //case 1 :- SAME COMPONENT THAN RETURN 
+        if(ulp_u==ulp_v) return;
+
+        //case 2 :- rank[ulp_u] < ranl[ulp_v] 
+        //smaller get connected to larger and parent of smaller updated to larger one
+        if(rank[ulp_u]<rank[ulp_v]){
+            parent[ulp_u]=ulp_v;
+        }
+
+         //case 3 :- rank[ulp_u] < ranl[ulp_v] 
+        //smaller get connected to larger and parent of smaller updated to larger one
+        if(rank[ulp_u]>rank[ulp_v]){
+            parent[ulp_v]=ulp_u;
+        }
+
+         //case 4 :- rank[ulp_u] == ranl[ulp_v] 
+        //anyone get connected to other one and parent of node getting connected updated
+        if(rank[ulp_u]==rank[ulp_v]){
+            parent[ulp_u]=ulp_v; // ulp_u connected to ulp_v
+            rank[ulp_v]++;// since connected to ulp_v its rank increased
+        }
     }
-    else if(size[ulp_u]>size[ulp_v]){
-        parent[ulp_v]=ulp_u;
-        size[ulp_u]+=size[ulp_v];
+    void UnionBySize(int u,int v){
+        int ulp_u = findUltimatePrent(u);
+        int ulp_v = findUltimatePrent(v);
+
+        //4 cases 
+
+        //case 1:- SAME COMPONENT THAN RETURN 
+        if(ulp_u == ulp_v) return;
+
+        //case 2: -NOT BELONGING TO SAME COMPONENT 
+         //smaller get connected to larger and parent of smaller updated to larger one
+         //and size of larger one updated by including size of smaller one
+        if(size[ulp_u]<size[ulp_v]){
+            parent[ulp_u]=ulp_v;
+            size[ulp_v]+=size[ulp_u];
+        }
+
+         //case 3: -NOT BELONGING TO SAME COMPONENT 
+         //smaller get connected to larger and parent of smaller updated to larger one
+         //and size of larger one updated by including size of smaller one
+        if(size[ulp_u]>size[ulp_v]){
+            parent[ulp_v]=ulp_u;
+            size[ulp_u]+=size[ulp_v];
+        }
+
+         //case 4: -NOT BELONGING TO SAME COMPONENT 
+         //anyone get connected to other node and parent of node getting connected
+         // is updated to one from whom connected
+         //and size of node from whom connected is updated by including 
+         //size of node getting connected
+        if(size[ulp_u]==size[ulp_v]){
+            parent[ulp_u]=ulp_v; // ulp_u connected to ulp_v
+            size[ulp_v]+=size[ulp_u]; // size of ulp_v increased by size of ulp_u
+        }
     }
-    else if(size[ulp_u]==size[ulp_v]){
-        //Anyone can get connected to other node and change in size of node to which connected
-        //update parent of node which gets connected
-        parent[ulp_v]=ulp_u; //connecting ulp_v to ulp_u 
-        size[ulp_u]+=size[ulp_v];
-    }
-}
 };
-
 
 class Solution {
 public:
-bool canTraverseAllPairs(vector<int>& nums) {
-    int n = nums.size();
-    DisjointSet ds(n);
-    map<int, vector<int>> prime;
+    bool canTraverseAllPairs(vector<int>& nums) {
+        //2709. Greatest Common Divisor Traversal -> same concept question
+        
+        //Time Complexity : O(N * log(max(num)))  
+        // USE PRIME FACTORIZATION 
+        // STORE EVERY INDEX AS A FACTOR FOR A PRIME NO 
+        //EX. 2-> POSITION WHERE 2 ARE FACTOR OF A NUMBER 
+        // 3 -> , 5-> ...SO ON 
+        //THAN, USE DSU AND MAKE COMPONENT USING INDEX 
+       //THAN, FIND LARGEST SIZE OF A COMPONENT 
 
-    //PRIMES :- push index for it where it occurs 
-    for (int i = 0; i < n; i++) {
-        for (int j = 2; j <= sqrt(nums[i]); j++) {
-            if (nums[i] % j == 0) {
-                prime[j].push_back(i);
-                while (nums[i] % j == 0) {
-                    nums[i] /= j;
-                }}}
-        if (nums[i] > 1) {
-            prime[nums[i]].push_back(i);
+       map<int,vector<int>>factor; 
+       int n = nums.size();
+       for(int i=0;i<n;i++){
+           for(int j=2;j*j<=nums[i];j++){
+               if(nums[i]%j==0){
+                   //CONTRIBUTION OF PRIME NO AT WHICH INDEX AS FACTOR ARE STORED
+                   factor[j].push_back(i);
+                   //ex:- 100%2=0 -> 100/2=50%2 =0 -> 50/2 = 25 -> now,stop
+                  //  and search for other prime factor
+                   while(nums[i]%j==0) nums[i]/=j; 
+               }
+           }
+           //ex:- 6 -> 6%2=0 -> 6/2=3 
+           //now,since 3*3=9>6 therefore out of loop 
+           //but,still 3 left to see and store position 
+           if(nums[i]>1) factor[nums[i]].push_back(i) ; 
+       }
+       
+       //NOW, APPLY UNION LOGIC
+       DisjointSet ds(n);
+       for(auto&it:factor){
+           vector<int>prime_pos = it.second;
+           //DO UNION 
+           for(int i=0;i<prime_pos.size()-1;i++){
+               ds.UnionBySize(prime_pos[i],prime_pos[i+1]);
+           }
+       }
+
+       //NOW,SEE FOR SINGLE COMPONENT I.E ALL HAVE SAME PARENT 
+        for(int i=0;i<n-1;i++){
+        //   cout<<ds.parent[i]<<" ";
+        if(ds.findUltimatePrent(i)!=ds.findUltimatePrent(i+1)) return false;
         }
+       return true;
     }
-    /*
-     for (auto&it : prime) {
-        cout<<it.first<<"\n";
-        for(auto x : it.second) cout<<x<<" ";
-        cout<<"\n";
-     }
-     */
-    //UNION 
-    for (auto&it : prime) {
-        auto v = it.second;
-        int m = v.size() ; 
-        for (int i = 0; i < m-1; i++) {
-       //     cout<<v[i] << " "<<v[i+1]<<"\n";
-            ds.UnionByRank(v[i], v[i+1]);
-        }
-    }
-    
-    //PARENT CHECK :- only 1 component i.e factor group 
-  //  cout<< ds.findUltimateParent(0) <<" "<< ds.parent[0] << "\n";
-    for (int i = 1; i <n; i++) {
-     //       cout << ds.findUltimateParent(i) << " ";
-            if (ds.findUltimateParent(i) != ds.findUltimateParent(0))  return 0;
-    }
-     return 1;
-}};
+};
