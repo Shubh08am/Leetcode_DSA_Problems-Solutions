@@ -87,7 +87,7 @@ public:
 class Solution {
 public:
     bool canTraverseAllPairs(vector<int>& nums) {
-        //2709. Greatest Common Divisor Traversal -> same concept question
+    //952. Largest Component Size by Common Factor ->same concept question
         
         //Time Complexity : O(N * log(max(num)))  
         // USE PRIME FACTORIZATION 
