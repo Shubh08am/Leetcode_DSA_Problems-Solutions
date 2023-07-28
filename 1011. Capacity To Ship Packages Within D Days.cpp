@@ -1,25 +1,28 @@
 class Solution {
-    bool good(int x, vector<int> &w, int days) {
-        int s = 0, cnt = 1;
-        for(int i : w) {
-            if(i > x) return false;
-            s += i;
-            if(s > x) {
-                cnt++;
-                s = i;
-                if(cnt > days) return false;
-            }
-        }
-        return true;
-    }
 public:
-    int shipWithinDays(vector<int>& weights, int days) {
-        int s = 0, e = 1e8, ans = INT_MAX;
-        while(s <= e) {
-            int m = (s + e) /2;
-            if(good(m, weights, days)) ans = min(ans, m), e = m - 1;
-            else s = m + 1;
+    bool isPossible(int mid,vector<int>& weights, int days) {
+        int sum=0,req=1;
+        for(int i=0;i<weights.size();i++){
+            if(sum+weights[i]>mid){
+                req++;
+                sum=weights[i];
+            }
+            else sum+=weights[i];
         }
-        return ans;
+    return req<=days;
+    }
+    int shipWithinDays(vector<int>& weights, int days) {
+       int low = *max_element(weights.begin(),weights.end())  ; 
+       int high = accumulate(weights.begin(),weights.end(),0) ; 
+        int ans=0;
+       while(low<=high){
+           int mid = low + (high-low)/2; 
+           if(isPossible(mid,weights,days)){
+               high=mid-1;
+               ans=mid;
+           }
+           else low=mid+1;
+       } 
+    return ans;
     }
 };
