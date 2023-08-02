@@ -7,17 +7,13 @@ public:
         //LEADING SPACE 
         while(i<n && s[i]==' ') i++;
 
-        //UPDATE s 
-        s = s.substr(i,n) ; 
-
         bool pos = 1 , neg = 0 ; 
 
-        if(s[0]=='-') neg = 1 ; 
+        if(s[i]=='-') neg = 1 ; 
         int maxi = INT_MAX , mini = INT_MIN; 
 
         //SKIP + && - 
-        if(s[0]=='+' || s[0]=='-') i=1;
-        else i=0;
+        if(s[i]=='+' || s[i]=='-') i++;
 
         n = s.size() ; 
         while(i<n){
