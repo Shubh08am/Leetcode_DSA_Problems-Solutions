@@ -9,60 +9,56 @@
  * };
  */
 class Solution {
-public: 
-    void insertattail(ListNode*& dummy, int val){
-    ListNode* newNode = new ListNode(val);
-    if (dummy==NULL) {
-        dummy = newNode;
-        return;
-    }
-    ListNode* temp = dummy;
-    while (temp->next != NULL) {
-        temp = temp->next;
-    }
-    temp->next = newNode;
-}
+public:
 
-    ListNode* mergeKLists(vector<ListNode*>& lists) {
-        int n = lists.size(); 
-        priority_queue<int,vector<int>,greater<int>>mpq; //min-heap created
-        vector<ListNode*>ans;
-         for(int i=0;i<n;i++){  
-             ListNode*dummy = lists[i];
-              while(dummy!=NULL){ //access all nodes of lists
-        //        cout<<dummy->val<<" ";
-                mpq.push(dummy->val); //all nodes value pushed in mpq
-                dummy=dummy->next;
-            }
+    ListNode*merge2ListRec(ListNode*left,ListNode*right){
+        if(!left) return right;
+        if(!right) return left;
+
+        if(left->val < right->val){
+            left->next = merge2ListRec(left->next,right) ; 
+            return left ; 
         }
-    //    cout<<"\n"<<mpq.size()<<"\n";
+        else{
+            right->next = merge2ListRec(left,right->next) ; 
+            return right ; 
+        }
+    }
+     ListNode*merge2ListIter(ListNode*left,ListNode*right){
+        if(!left) return right;
+        if(!right) return left;
+        ListNode*dummy = new ListNode(-1) ; 
+        ListNode*ans = dummy; 
 
-        while(!mpq.empty()){ 
-            ListNode*node= new ListNode(mpq.top());
-            mpq.pop();
-             ans.push_back(node);
-        } 
-     //  ans.push_back(NULL); //denotes termination 
-    //    cout<<ans.size()<<"\n"; 
-    //  for(auto&x : ans) cout<<x->val<<" ";
+        while(left && right){ 
+            if(left->val < right->val){
+                dummy->next = left ; 
+                left = left->next ; 
+            }
+            else{
+                dummy->next = right ; 
+                right = right->next ; 
+            }
+            dummy=dummy->next;
+        }
+        dummy->next = (!left)?right:left ; 
+        return ans->next;
+    }
+    ListNode*partitionAndMerge(int start,int end,vector<ListNode*>& lists) {
+        if(start>end) return NULL; 
+        if(start==end) return lists[start] ; 
 
-         if(ans.size()==0) return NULL; //empty lists
-         /*
-         ListNode*dummy = NULL ;
-         int i=0;
-         while(i<ans.size()){
-         insertattail(dummy,ans[i]->val);
-         i++;
-         }
-         */
-         ListNode*dummy = ans[0] , *temp;
-         temp=dummy;
-         int i=1;
-         while(i<ans.size()){
-         dummy->next = ans[i];
-         dummy=dummy->next;
-         i++;
-         }
-      return temp;
+        int mid = start + (end-start)/2 ; 
+
+        ListNode*left = partitionAndMerge(start,mid,lists) ; 
+        ListNode*right = partitionAndMerge(mid+1,end,lists) ; 
+
+    //    return merge2ListRec(left,right);
+        return merge2ListIter(left,right);
+    }
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        //O(Nlogk) -> log (k) height of tree and Total Nodes = N
+        int k = lists.size() ;
+        return partitionAndMerge(0,k-1,lists) ;
     }
 };
