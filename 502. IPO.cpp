@@ -1,51 +1,34 @@
 class Solution {
 public:
-    // for same capital, we give more priority to the
-    // project with higher profit
-    static bool compare(pair<int,int>& a, pair<int,int>& b) {
-        if(a.first == b.first) return a.second>b.second;
-        return a.first<b.first;
-    }
+    /*
+Max heap + greedy jaisa hain 
+Vector of pair bnake capital aur profit rkhte same capital pe highest profit uthate vrna ascending order mein sort krdenge 
+Aur pq mein bas unko daalte jiska capital <= w hoga aur jab bhi kisi bhi time mein hm ye dekhte kii jo capital tha vector of pair mein vho zada hain w se tho break krdete aage nhi dekhte kyuki ascending mein sort krra tha vector of pair ko 
+Vrna Max heap se top ko ans mein lelete and last mein check krlo k 0 hua ya nhi
+    */
     int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
-        int n = profits.size();
-        vector<pair<int,int>> arr;
-
-        for(int i=0; i<n; ++i) {
-            arr.push_back(make_pair(capital[i],profits[i]));
-        }
-        sort(begin(arr), end(arr), compare);
-
-        int idx = 0;
-        priority_queue<int> pq;
-
-        // while we are left with some projects
-        while(k>0 and idx<n) {
-            // we insert profits of all the projects with capital <= w
-            // into the priority queue
-            while(idx<n && arr[idx].first <= w) {
-                pq.push(arr[idx].second);
-                ++idx;
+        int n = profits.size() , ans = w;
+        vector<pair<int,int>>vp(n); 
+        for(int i=0;i<n;i++) vp[i] = {capital[i]  , profits[i]} ; 
+        sort(vp.begin(),vp.end()) ; 
+        priority_queue<int>pq; 
+        int i=0;
+        while(i<n && k){
+            while(i<n && vp[i].first <= ans){
+                pq.push(vp[i].second) ;
+                i++;
             }
-            // if profit<=0 then simply skip
-            while(!pq.empty() and pq.top() <= 0) {
-                pq.pop();
-            }
-            // if we don't have any project with capital <= w, then we
-            // can't do any more project as arr is sorted on the
-            // basis of capital
-            if(pq.empty() and idx<n and arr[idx].first > w) break;
-            // else do the current project with maximum profit
-            --k;
-            w += pq.top();
+            if(pq.empty()) break ; 
+            ans+=pq.top() ; 
             pq.pop();
+            k--;
         }
-        // All the projects present in pq are having capital <= w
-        // So, if we can still complete some projects
-        while(k>0 and !pq.empty() and pq.top() > 0) {
-            --k;
-            w += pq.top();
+        //k not 0 and pq not empty still possible 
+        while(k && !pq.empty()){
+            ans+=pq.top();
             pq.pop();
+            k--;
         }
-        return w;
+    return ans;
     }
 };
