@@ -1,31 +1,33 @@
 class Solution {
 public:
-    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-        
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {    
     vector<vector<int>> ans;
-    priority_queue<pair<int, pair<int, int>>> pq; // max-heap to store the k smallest pairs
+    priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>>> pq;  
     int n = nums1.size() , m = nums2.size() ;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m ; j++) {
-            int currSum = nums1[i] + nums2[j];
+    set<pair<int,int>>vis; 
+    vis.insert({0,0}) ; 
+    int sum = nums1[0] + nums2[0] ; 
+    pq.push({sum,{0,0}});
 
-            if (pq.size() < k) {
-                pq.push({currSum, {nums1[i], nums2[j]}});
-            }
-            else if (currSum < pq.top().first) {
-                pq.pop();
-                pq.push({currSum, {nums1[i], nums2[j]}});
-            } 
-            else if (currSum > pq.top().first) {
-            //    cout<<i<<" "<<j<<"\n";
-                break;
-            }
+    // (i,j) -> (i+1,j) or (i,j+1)
+    //T.C -> O(K*log(min(k,m*n))) 
+    while(k-- && !pq.empty()){
+        auto it = pq.top() ; 
+        pq.pop() ; 
+        int i = it.second.first ; 
+        int j = it.second.second ;
+
+        ans.push_back({nums1[i],nums2[j]}) ;
+
+        //check valid and not visited earlier 
+        if(i+1<n && vis.find({i+1,j}) == vis.end()){
+            pq.push({nums1[i+1] + nums2[j],{i+1,j}});
+            vis.insert({i+1,j}) ; 
         }
-    }
-   // cout<<pq.size();
-    while (!pq.empty()) {
-        ans.push_back({pq.top().second.first, pq.top().second.second});
-        pq.pop();
+        if(j+1<m && vis.find({i,j+1}) == vis.end()){
+            pq.push({ nums1[i] + nums2[j+1],{i,j+1}});
+            vis.insert({i,j+1}) ; 
+        }
     }
     return ans;
     }
