@@ -1,11 +1,21 @@
 class Solution {
-public:
+public: 
+int countSetBits(int n){
+     int set = 0;
+     while(n){
+ 	 set+=(n&1);
+ 	 n>>=1;
+    }
+ return  set;	
+    }
     vector<int> countBits(int n) {
-        vector arr(n + 1 , 0); //define an array of size "n+1" and initialize to zero
-
-    for(int i = 0; i <= n; i++)
-        arr[i] = arr[i/2] + i%2;    //for even no. i%2 = 0 and for odd no. i%2 = 1
-    
-    return arr;
+vector<int>bits(n+1,0);
+for(int i=1;i<=n;i++){ 
+    int x = i&1;
+ //   cout<< x << " " << (i&1) << "\n";
+	//bits[i]=countSetBits(i);//O(nlogn) 
+    bits[i]=bits[(i>>1)] + x ; //O(n)
+}
+return bits;
     }
 };
